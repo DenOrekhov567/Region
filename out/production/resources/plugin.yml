@@ -1,0 +1,11 @@
+name: RegionGuard
+
+main: dev.denny.regionguard.RegionGuardPlugin
+api: 1.0.0
+version: 0.0.1
+
+depend:
+  - "DataManager"
+  - "Database"
+  - "FormAPI"
+  - "Account"
