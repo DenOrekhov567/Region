@@ -1,2 +1,2 @@
-rootProject.name = "RegionGuard"
+rootProject.name = "Region"
 
