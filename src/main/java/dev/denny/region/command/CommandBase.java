@@ -19,13 +19,13 @@ public class CommandBase extends Command {
 
     private List<Argument> argumentList;
 
-    public CommandBase(String name, String disctiption, String usage) {
-        super(name, disctiption, usage);
+    public CommandBase(String name, String description, String usage) {
+        super(name, description, usage);
 
         getCommandParameters().clear();
-        commandParameters.put("parameter1", new CommandParameter[]{
+        commandParameters.put("regionParameter1", new CommandParameter[]{
                 CommandParameter.newEnum(
-                        "команда",
+                        "regionEnum",
                         new CommandEnum(
                          "команда",
                         "addmember",
@@ -36,9 +36,10 @@ public class CommandBase extends Command {
                 CommandParameter.newType("регон", CommandParamType.STRING),
                 CommandParameter.newType("игрок", CommandParamType.TARGET)
         });
-        commandParameters.put("parameter2", new CommandParameter[] {
+
+        commandParameters.put("regionParameter2", new CommandParameter[] {
                 CommandParameter.newEnum(
-                        "команда",
+                        "regionEnum",
                         new CommandEnum(
                          "команда",
                         "addmember",

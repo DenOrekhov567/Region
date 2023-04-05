@@ -8,5 +8,4 @@ depend:
   - DataManager
   - Database
   - FormAPI
-  - Account
   - Rank

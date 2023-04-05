@@ -25,6 +25,8 @@ public class EventListener implements Listener {
     private List<String> listPlayers = new ArrayList<>();
 
     private void cancelAction(Gamer player, Block block) {
+        listPlayers.remove(player.getName());
+
         Animation.add(block.getLocation());
         Level level = player.getLevel();
         level.setBlock(block.getLocation(), Block.get(0));
@@ -38,17 +40,14 @@ public class EventListener implements Listener {
         RegionManager manager = RegionPlugin.getManager();
         Region region = manager.getRegion(block.getLocation());
 
-        player.getServer().getLogger().emergency("Place1");
-
         //Если на этой позиции есть регион
         if (region != null) {
             //Если это приватный блок, то
-            if (block.getId() == Block.IRON_BLOCK || block.getId() == Block.GOLD_BLOCK || block.getId() == Block.DIAMOND_BLOCK) {
+            if (manager.getConfigManager().getRadius(block) != null) {
                 event.setCancelled();
+
                 Animation.add(block.getLocation());
                 player.sendPopup("§cзапрещено");
-
-                player.getServer().getLogger().emergency("Place2");
 
                 return;
             }
@@ -56,34 +55,31 @@ public class EventListener implements Listener {
             //Если игрок не является владельцем или участником региона
             if (!region.isOwner(player) && !region.isMember(player)) {
                 event.setCancelled();
+
                 Animation.add(block.getLocation());
                 player.sendPopup("§cзапрещено");
-
-                player.getServer().getLogger().emergency("Place3");
 
                 return;
             }
             return;
         }
 
-        player.getServer().getLogger().emergency("Place4");
-
-        //Дальше блок, если на этой позиции нет региона
-
         //Если это приватный блок
-        if (block.getId() == Block.IRON_BLOCK || block.getId() == Block.GOLD_BLOCK || block.getId() == Block.DIAMOND_BLOCK) {
+        if (manager.getConfigManager().getRadius(block) != null) {
             //Если игрок находится в массив людей, что уже приватят регион
             if (listPlayers.contains(player.getName())) {
+                event.setCancelled();
+
+                Animation.add(block.getLocation());
+
                 //Нельзя p. s. чинит баг с тем, что можно поставить сразу несколько приватных блоков
                 return;
             }
 
-            //Добавляем игрока в лист, что приватят сейчас регион
-            listPlayers.add(player.getName());
-
             //Есть ли у игрока права на создание региона
             if (!manager.isCanCreate(player)) {
                 event.setCancelled();
+
                 Animation.add(block.getLocation());
                 player.sendMessage("§7> §aТы §fпревысил максимальное количество приватов");
 
@@ -93,29 +89,31 @@ public class EventListener implements Listener {
             //Пересекает ли новый регион границы других регионов
             if (manager.isNewRegionIncludeOther(block)) {
                 event.setCancelled();
+
                 Animation.add(block.getLocation());
                 player.sendMessage("§7> §fГраницы §aнового региона §fпересекают границы §aдругого");
 
                 return;
             }
 
+            //Добавляем игрока в лист, что приватят сейчас регион
+            listPlayers.add(player.getName());
+
             //Отправляем игроку форму
-            CustomForm form = new CustomForm("Регионы")
+            CustomForm form = new CustomForm("§7Регионы")
                     .addLabel(
-                            "§aМеню создания региона\n" +
-                            "§7> §fОстался §aпоследний шаг§f...\n" +
-                            "§7> §fВведи §aназвание региона §fв поле\n" +
-                            "§7> §aТребования§f:\n" +
-                            "§7- §fдлина до §a8 символов§f,\n" +
-                            "§7- §fтолько §aбуквы§f, §aцифры §fи §aнижние подчеркивания\n"
+                            "§7> §aТребования к §aназванию§f:\n" +
+                            "§7• §fДлина до §a8 символов§f,\n" +
+                            "§7• §fЗапрещены §a^[a-zA-Z0-9_]+$ §f символы\n"
                     )
-                    .addInput("Введи название региона");
+                    .addInput("§7> §fВведи §aназвание региона");
 
             form.send(player, (targetPlayer, targetForm, data) -> {
                 Gamer gtargetPlayer = (Gamer) targetPlayer;
                 //Игрок закрыл форму
                 if (data == null) {
                     cancelAction(gtargetPlayer, block);
+
                     player.sendMessage("§7> §fСоздание §aнового региона §fотменено");
 
                     return;
@@ -124,6 +122,7 @@ public class EventListener implements Listener {
                 //Если поле названия региона пустое, то
                 if (data.get(1) == "") {
                     cancelAction(gtargetPlayer, block);
+
                     player.sendMessage("§7> §fВ названии §aнового региона §fне может быть пусто");
 
                     return;
@@ -135,6 +134,7 @@ public class EventListener implements Listener {
                 //Если имя содержит что-то кроме букв, цифр и нижних подчеркиваний
                 if (!manager.isValidName(regionName)) {
                     cancelAction(gtargetPlayer, block);
+
                     player.sendMessage("§7> §fВ названии §aнового региона §fне может быть что-то кроме §aбукв§f, §aцифр§f, §aпробелов");
 
                     return;
@@ -143,6 +143,7 @@ public class EventListener implements Listener {
                 //Если название региона больше 8 символов
                 if (regionName.length() > 8) {
                     cancelAction(gtargetPlayer, block);
+
                     player.sendMessage("§7> §fВ названии §aнового региона §fне может быть больше, чем 8 символов");
 
                     return;
@@ -151,14 +152,15 @@ public class EventListener implements Listener {
                 //Если регион с таким именем уже существует
                 if (manager.isRegionNameExists(regionName)) {
                     cancelAction(gtargetPlayer, block);
-                    player.sendMessage("§7> §fРегион §a" + region + " §fуже существует");
+
+                    player.sendMessage("§7> §fРегион §a" + regionName + " §fуже существует");
 
                     return;
                 }
 
                 //Создаем новый регион
                 manager.createRegion((Gamer) targetPlayer, regionName, block);
-                targetPlayer.sendMessage("§7> §fРегион §a" + region + " §fбыл создан");
+                targetPlayer.sendMessage("§7> §fРегион §a" + regionName+ " §fбыл создан");
 
                 //Удаляем игрока из списка тех, что приватят в данное время
                 listPlayers.remove(player.getName());
@@ -171,9 +173,8 @@ public class EventListener implements Listener {
         Gamer player = (Gamer) event.getPlayer();
         Block block = event.getBlock();
 
-        player.getServer().getLogger().emergency("Break1");
-
-        Region region = RegionPlugin.getManager().getRegion(block.getLocation());
+        RegionManager manager = RegionPlugin.getManager();
+        Region region = manager.getRegion(block.getLocation());
         if (region != null) {
             if (!region.isOwner(player) && !region.isMember(player)) {
                 Animation.add(block.getLocation());
@@ -181,26 +182,22 @@ public class EventListener implements Listener {
 
                 player.sendPopup("§cзапрещено");
 
-                player.getServer().getLogger().emergency("Break2");
-
                 return;
             }
 
-            if (block.getId() == Block.IRON_BLOCK || block.getId() == Block.GOLD_BLOCK || block.getId() == Block.DIAMOND_BLOCK) {
-                if (region.isOwner(player)) {
-                    RegionPlugin.getManager().deleteRegion(player, region.getName());
+            if (manager.getConfigManager().getRadius(block) != null) {
+                if (!region.isOwner(player)) {
+                    Animation.add(block.getLocation());
+                    event.setCancelled();
 
-                    player.sendMessage("§7> §aТы §fудалил регион §a" + region.getName());
-
-                    player.getServer().getLogger().emergency("Break3");
+                    player.sendMessage("§7> §aТы §fне можешь регион удалить §a" + region.getName() + " §fтак как ты не его владелец");
 
                     return;
                 }
 
-                event.setCancelled();
-                Animation.add(block.getLocation());
+                manager.deleteRegion(region.getName());
 
-                player.sendMessage("§7> §aТы §fне можешь регион удалить§a" + region.getName() + " §fтак как ты не его владелец");
+                player.sendMessage("§7> §aТы §fудалил регион §a" + region.getName());
             }
         }
     }
@@ -216,8 +213,6 @@ public class EventListener implements Listener {
             if (!region.isOwner(player) && !region.isMember(player)) {
                 Animation.add(block.getLocation());
                 event.setCancelled();
-
-                player.sendMessage("Interact");
 
                 player.sendPopup("§cзапрещено");
             }

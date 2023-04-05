@@ -15,7 +15,7 @@ public class RegionPlugin extends PluginBase implements Listener {
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new EventListener(), this);
 
-        manager = manager == null ? new RegionManager(this) : manager;
+        manager = new RegionManager(this);
 
         getServer().getCommandMap().register("", new RegionCommand());
     }

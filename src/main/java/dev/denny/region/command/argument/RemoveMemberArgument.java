@@ -28,28 +28,28 @@ public class RemoveMemberArgument extends Argument {
         Gamer recipient = (Gamer) sender.getServer().getPlayer(recipientName);
 
         //Если региона, имя которого в первом пост аргументе не существует
-        if(region == null) {
+        if (region == null) {
             sender.sendMessage("§7> §fРегиона §a" + regionName + " §fне существует");
 
             return false;
         }
 
         //Если игрок, отправивший команду не является владельцем региона в первом пост аргументе
-        if(!region.isOwner(sender)) {
+        if (!region.isOwner(sender)) {
             sender.sendMessage("§7> §aТы §fне можешь добавить в регион §aучастников");
 
             return false;
         }
 
         //Если имя игрока во втором пост аргументе - это имя игрока, отправившего команду
-        if(recipientName.toLowerCase().equals(sender.getName().toLowerCase())) {
+        if (recipientName.toLowerCase().equals(sender.getName().toLowerCase())) {
             sender.sendMessage("§7> §fНельзя добавить в регион §aсебя");
 
             return false;
         }
 
         //Если игрока с именем во втором пост аргументе нет в сети
-        if(recipient == null) {
+        if (recipient == null) {
             //Если игрок, который указан во втором пост аргументе, является участником региона, указанному в первом пост аргументе
             if (region.isMember(recipientName)) {
                 sender.sendMessage("§7> §a" + recipientName + " §fуже и так участник региона §a" + regionName);
@@ -64,7 +64,7 @@ public class RemoveMemberArgument extends Argument {
             return true;
         }
 
-        if(!region.isMember(recipient)) {
+        if (!region.isMember(recipient)) {
             sender.sendMessage("§7> §a" + recipient.getName() + " §fне участник региона §a" + regionName);
 
             return false;

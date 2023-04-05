@@ -10,7 +10,7 @@ public class RegionCommand extends CommandBase {
         super(
                 "rg",
                 "Регионы",
-                "§7> Использовать: §a/rg <команда:список> <аргумент или пусто> <аргумент или пусто>"
+                "§7> §fИспользовать: §a/rg <команда:список> <аргумент или пусто> <аргумент или пусто>"
         );
 
         setPermission("command.region.use");

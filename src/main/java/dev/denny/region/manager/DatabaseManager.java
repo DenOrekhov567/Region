@@ -59,5 +59,4 @@ public class DatabaseManager {
     public void queryEmpty(String request) {
         connection.createQuery(request).executeUpdate();
     }
-
 }

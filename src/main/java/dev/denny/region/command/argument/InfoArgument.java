@@ -3,8 +3,11 @@ package dev.denny.region.command.argument;
 import dev.denny.account.player.Gamer;
 import dev.denny.region.RegionPlugin;
 import dev.denny.region.manager.RegionManager;
+import dev.denny.region.utils.Member;
 import dev.denny.region.utils.Region;
 import lombok.Getter;
+
+import java.util.List;
 
 public class InfoArgument extends Argument {
 
@@ -23,6 +26,7 @@ public class InfoArgument extends Argument {
 
                     return false;
             }
+
             sender.sendMessage(
                     "§7> §fИнформация о регионе §a" + region.getName() + "\n" +
                             "§7- §fНазвание: §a" + region.getName() + "\n" +
@@ -39,10 +43,22 @@ public class InfoArgument extends Argument {
                 return false;
             }
 
+            String allMemberNames = "пусто";
+            List<Member> list = region.getMembers();
+            if (list != null) {
+                StringBuilder sb = new StringBuilder();
+                for (Member member : list) {
+                    sb.append("§a").append(member.getName()).append("§f, ");
+                }
+                allMemberNames = sb.toString().trim();
+                allMemberNames = allMemberNames.substring(0, allMemberNames.length() - 1);
+            }
+
             sender.sendMessage(
                     "§7> §fИнформация о регионе §a" + region.getName() + "\n" +
-                            "§7- §fНазвание: §a" + region.getName() + "\n" +
-                            "§7- §fВладелец: §a" + region.getOwnerName()
+                    "§7- §fНазвание: §a" + region.getName() + "\n" +
+                    "§7- §fВладелец: §a" + region.getOwnerName() + "\n" +
+                    "§7- §fУчастники: §a" + allMemberNames
             );
             return true;
         }
