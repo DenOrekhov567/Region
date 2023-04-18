@@ -27,7 +27,7 @@ public class ConfigManager {
 
         HashMap<String, Integer> block1 = new HashMap<String, Integer>();
         block1.put("meta", 0);
-        block1.put("radius", 2);
+        block1.put("radius", 3);
 
         HashMap<String, Integer> block2 = new HashMap<String, Integer>();
         block2.put("meta", 0);

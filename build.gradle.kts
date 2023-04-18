@@ -8,22 +8,21 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
 
-    maven("https://repo.opencollab.dev/maven-snapshots/")
-    maven("https://repo.opencollab.dev/maven-releases/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
-    //Nukkit
-    compileOnly("cn.nukkit:nukkit:1.0-SNAPSHOT")
+    // PowerNukkitX
+    compileOnly("cn.powernukkitx:powernukkitx:1.19.70-r2")
 
     //Lombok
     compileOnly("org.projectlombok:lombok:1.18.26")
     annotationProcessor("org.projectlombok:lombok:1.18.26")
 
-    //Plugins
-    implementation(files("./lib/DataManager.jar"))
-    implementation(files("./lib/Database.jar"))
-    implementation(files("./lib/FormAPI.jar"))
-    implementation(files("./lib/Account.jar"))
-    implementation(files("./lib/Rank.jar"))
+    //Depend
+    implementation(files("C:/Users/denis/Desktop/Test Server/plugins/DataManager-1.0-SNAPSHOT.jar"))
+    implementation(files("C:/Users/denis/Desktop/Test Server/plugins/Database-1.0-SNAPSHOT.jar"))
+    implementation(files("C:/Users/denis/Desktop/Test Server/plugins/FormAPI-1.0-SNAPSHOT.jar"))
+    implementation(files("C:/Users/denis/Desktop/Test Server/plugins/Pattern.jar"))
+    implementation(files("C:/Users/denis/Desktop/Test Server/plugins/dCore.jar"))
 }

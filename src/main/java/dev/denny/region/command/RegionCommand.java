@@ -1,8 +1,8 @@
 package dev.denny.region.command;
 
+import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
-import dev.denny.account.player.Gamer;
-import dev.denny.rank.RankPlugin;
+import dev.denny.dcore.dCorePlugin;
 
 public class RegionCommand extends CommandBase {
 
@@ -14,11 +14,11 @@ public class RegionCommand extends CommandBase {
         );
 
         setPermission("command.region.use");
-        RankPlugin.getManager().addToPermissionList("command.region.use", 0);
+        dCorePlugin.getInstance().getManager().addToPermissionList("command.region.use", 0);
     }
 
     @Override
     public boolean execute(CommandSender sender, String s, String[] args) {
-        return executeSafe((Gamer) sender, args);
+        return executeSafe((Player) sender, args);
     }
 }
