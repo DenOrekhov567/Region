@@ -50,18 +50,17 @@ public class RegionManager {
         Position privateBlockPosition = block.getLocation();
         Integer radius = config.getRadius(block);
 
-        double minX = privateBlockPosition.getX() - radius;
-        double minY = privateBlockPosition.getY() - radius;
-        double minZ = privateBlockPosition.getZ() - radius;
-
-        double maxX = privateBlockPosition.getX() + radius;
-        double maxY = privateBlockPosition.getY() + radius;
-        double maxZ = privateBlockPosition.getZ() + radius;
-
-        String world = block.getLocation().getLevel().getFolderName();
-
         String request = "SELECT * FROM regions WHERE (maxX >= %1$s AND minX <= %2$s) AND (maxY >= %3$s AND minY <= %4$s) AND (maxZ >= %5$s AND minZ <= %6$s) AND world = '%7$s';";
-        request = String.format(request, minX, maxX, minY, maxY, minZ, maxZ, world);
+        request = String.format(
+                request,
+                privateBlockPosition.getX() - radius,
+                privateBlockPosition.getX() + radius,
+                privateBlockPosition.getY() - radius,
+                privateBlockPosition.getY() + radius,
+                privateBlockPosition.getZ() - radius,
+                privateBlockPosition.getZ() + radius,
+                block.getLocation().getLevel().getFolderName()
+        );
 
         return DatabasePlugin.getDatabase().query(request, RegionData.class) != null;
     }
@@ -88,20 +87,21 @@ public class RegionManager {
         Position privateBlockPosition = block.getLocation();
         Integer radius = RegionPlugin.getManager().getConfig().getRadius(block);
 
-        double minX = privateBlockPosition.getX() - radius;
-        double minY = privateBlockPosition.getY() - radius;
-        double minZ = privateBlockPosition.getZ() - radius;
-
-        double maxX = privateBlockPosition.getX() + radius;
-        double maxY = privateBlockPosition.getY() + radius;
-        double maxZ = privateBlockPosition.getZ() + radius;
-
-        String world = block.getLocation().getLevel().getFolderName();
-
         Database database = DatabasePlugin.getDatabase();
 
         String request = "INSERT INTO regions(name, minX, minY, minZ, maxX, maxY, maxZ, world) VALUES ('%1$s', %2$s, %3$s, %4$s, %5$s, %6$s, %7$s, '%8$s');";
-        request = String.format(request, name, minX, minY, minZ, maxX, maxY, maxZ, world);
+        request = String.format(
+                request,
+                name,
+                privateBlockPosition.getX() - radius,
+                privateBlockPosition.getX() + radius,
+                privateBlockPosition.getY() - radius,
+                privateBlockPosition.getY() + radius,
+                privateBlockPosition.getZ() - radius,
+                privateBlockPosition.getZ() + radius,
+                block.getLocation().getLevel().getFolderName()
+        );
+
         database.query(request);
 
         request = "INSERT INTO region_members(name, player, permission) VALUES ('%1$s', '%2$s', '%3$s');";
